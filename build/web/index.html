@@ -34,61 +34,12 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = '1018905545';
+    var serviceWorkerVersion = '4026859385';
   </script>
-  <style>
-    #snackbar {
-      visibility: hidden;
-      min-width: 250px;
-      margin-left: -125px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 2px;
-      padding: 16px;
-      position: fixed;
-      z-index: 1;
-      left: 50%;
-      bottom: 30px;
-      font-size: 17px;
-    }
-
-    #snackbar.show {
-      visibility: visible;
-      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-      animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-
-    @-webkit-keyframes fadein {
-      from {bottom: 0; opacity: 0;}
-      to {bottom: 30px; opacity: 1;}
-    }
-
-    @keyframes fadein {
-      from {bottom: 0; opacity: 0;}
-      to {bottom: 30px; opacity: 1;}
-    }
-
-    @-webkit-keyframes fadeout {
-      from {bottom: 30px; opacity: 1;}
-      to {bottom: 0; opacity: 0;}
-    }
-
-    @keyframes fadeout {
-      from {bottom: 30px; opacity: 1;}
-      to {bottom: 0; opacity: 0;}
-    }
-  </style>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 </head>
 <body>
-  <div id="snackbar">
-    Some text some message..
-    <button type="button" onclick="location.reload()">
-      REFRESH
-    </button>
-  </div>
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
@@ -102,44 +53,6 @@
         return appRunner.runApp();
       });
     });
-
-    // Monkey patching window.history
-    (function(history) {
-        var pushState = history.pushState;
-        history.pushState = function(state) {
-            if (typeof history.onpushstate == "function")
-            {
-                history.onpushstate({
-                    state: state
-                });
-            }
-            return pushState.apply(history, arguments);
-        }
-    })(window.history);
-    window.onpopstate = history.onpushstate = function(e)
-    {
-        navigator.serviceWorker
-        .getRegistrations()
-        .then((regs) => {
-          // debugger;
-
-          regs.forEach((reg) => {
-            console.dir(reg);
-            console.dir(reg.onupdatefound);
-            if(reg.onupdatefound == null) {
-              reg.onupdatefound = () => {
-                var x = document.getElementById("snackbar");
-                x.className = "show";
-                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
-                console.log('onupdatefound111');
-              };
-            }
-            reg.update();
-          });
-        });
-        console.log('History has been modified!')
-        console.log(e)
-    };
   </script>
 </body>
 </html>
